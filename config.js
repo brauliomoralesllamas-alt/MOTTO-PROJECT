@@ -3,8 +3,8 @@ const MOTTO_CONFIG = {
     isSoldOut: false,          // Cambia a true si te quedas sin inventario (bloquea la página)
 
     // HORARIOS DE OPERACIÓN (Formato 24 hrs)
-    startHour: 16,             // 2:00 PM
-    endHour: 19,               // 8:00 PM
+    startHour: 18,             // 6:00 PM
+    endHour: 20,               // 8:00 PM
 
     // PRECIOS Y DESCUENTOS
     precioBowl: 170,           // Precio normal del bowl
