@@ -1,8 +1,15 @@
 const MOTTO_CONFIG = {
-    isSoldOut: false,
-    startHour: 14,
-    endHour: 20,
-    precioBowl: 170, // <-- Actualizado a 170
-    descuentoBienvenida: 30, // <-- El descuento de primer cliente
-    scriptURL: 'https://script.google.com/macros/s/AKfycbzJBe79JwZMFDS6g3BnIcHbws5YMhhXjZrngL7t64YTdRef_gfLUf0kmXwebCvKgviaKQ/exec'
+    // ESTADO DE LA TIENDA
+    isSoldOut: false,          // Cambia a true si te quedas sin inventario (bloquea la página)
+
+    // HORARIOS DE OPERACIÓN (Formato 24 hrs)
+    startHour: 14,             // 2:00 PM
+    endHour: 20,               // 8:00 PM
+
+    // PRECIOS Y DESCUENTOS
+    precioBowl: 170,           // Precio normal del bowl
+    descuentoBienvenida: 30,   // Descuento en pesos para clientes nuevos
+
+    // CONEXIÓN A BASE DE DATOS
+    scriptURL: 'https://script.google.com/macros/s/AKfycbw6OPIj8OqZQ_fhgrL8-kyEHn9V0wmrHzUNP3xOvEA6QJxS4QrAKySt7Z1Z_2MoowSsRw/exec'
 };
