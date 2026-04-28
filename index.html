@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MOTTO PROJECT - XP Rewards</title>
     <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <script src="config.js"></script>
@@ -13,19 +13,34 @@
             --bg-dark: #0a0a0a;
             --card-bg: #161616;
             --text-light: #ffffff;
-            --input-height: 65px;
+            --input-height: 60px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--bg-dark); color: var(--text-light); font-family: 'Inter', sans-serif; padding: 20px; text-align: center; }
-        .container { max-width: 450px; margin: 0 auto; position: relative; }
+        body {
+            background-color: var(--bg-dark); color: var(--text-light);
+            font-family: 'Inter', sans-serif; padding: 20px 15px;
+            text-align: center; overflow-x: hidden;
+            /* Previene el zoom accidental al hacer tap en móviles */
+            touch-action: manipulation;
+        }
 
-        .motto-logo { font-family: 'Bungee', cursive; font-size: 5rem; line-height: 0.8; margin-bottom: 5px; }
-        .motto-subtitle { letter-spacing: 8px; color: var(--accent-orange); font-weight: bold; margin-bottom: 25px; text-transform: uppercase; font-size: 0.9rem; }
+        .container {
+            max-width: 450px; margin: 0 auto; position: relative;
+            animation: fadeInUP 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeInUP {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .motto-logo { font-family: 'Bungee', cursive; font-size: 4.5rem; line-height: 0.8; margin-bottom: 5px; }
+        .motto-subtitle { letter-spacing: 6px; color: var(--accent-orange); font-weight: bold; margin-bottom: 25px; text-transform: uppercase; font-size: 0.85rem; }
 
         .today-badge {
             background: rgba(243, 109, 33, 0.15); color: var(--accent-orange);
-            display: inline-block; padding: 8px 15px; border-radius: 50px;
+            display: inline-block; padding: 8px 18px; border-radius: 50px;
             font-weight: 800; font-size: 0.85rem; margin-bottom: 20px;
             border: 1px solid var(--accent-orange); text-transform: uppercase;
         }
@@ -33,75 +48,126 @@
         /* --- ESTILO VIDEOJUEGO: REWARDS --- */
         .loyalty-card {
             background: #111; border: 2px solid #222;
-            padding: 20px; border-radius: 20px; margin-bottom: 15px;
+            padding: 22px 18px; border-radius: 20px; margin-bottom: 10px;
             position: relative; overflow: hidden;
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transition: all 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
         }
-        .loyalty-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .loyalty-tag { font-size: 0.7rem; color: var(--accent-orange); font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
-        .xp-label { font-size: 0.7rem; color: #666; font-weight: 800; }
+
+        .loyalty-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .loyalty-tag { font-size: 0.75rem; color: var(--accent-orange); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .xp-label { font-size: 0.75rem; color: #888; font-weight: 800; transition: color 0.3s ease; }
 
         /* Contenedor de la barra */
         .xp-track {
-            width: 100%; height: 18px; background: #222;
-            border-radius: 50px; overflow: hidden; border: 1px solid #333;
-            position: relative;
+            width: 100%; height: 22px; background: #222;
+            border-radius: 50px; border: 1px solid #333;
+            position: relative; overflow: hidden;
         }
+
         /* La barra que se llena */
         .xp-bar {
             width: 0%; height: 100%;
             background: linear-gradient(90deg, #f36d21, #ff8c00);
             box-shadow: 0 0 15px rgba(243, 109, 33, 0.6);
             transition: width 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-            position: relative;
+            position: relative; z-index: 1;
         }
+
         /* Brillo animado de la barra */
         .xp-bar::after {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             animation: shine 2s infinite;
         }
         @keyframes shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-        .loyalty-msg { font-size: 0.9rem; color: #eee; margin-top: 10px; font-weight: 600; min-height: 1.2rem; }
+        /* Icono de recompensa al final de la barra */
+        .reward-icon {
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            font-size: 0.9rem; z-index: 2; opacity: 0.4;
+            transition: all 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            filter: grayscale(100%);
+        }
+
+        /* Estado activo de la recompensa (Level Up) */
+        .reward-icon.active {
+            opacity: 1; transform: translateY(-50%) scale(1.4);
+            filter: grayscale(0%); text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        .loyalty-msg { font-size: 0.9rem; color: #eee; margin-top: 15px; font-weight: 600; min-height: 1.2rem; transition: all 0.3s ease; }
+
+        /* Animación Especial de Level Up para la tarjeta */
+        @keyframes levelUpPulse {
+            0% { transform: scale(1); border-color: #222; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+            50% { transform: scale(1.02); border-color: #FFD700; box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); }
+            100% { transform: scale(1); border-color: var(--accent-orange); box-shadow: 0 10px 25px rgba(243, 109, 33, 0.3); }
+        }
+        .card-level-up { animation: levelUpPulse 1.2s ease-out forwards; }
+        .text-gold { color: #FFD700 !important; text-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
         /* ---------------------------------- */
 
-        .order-summary { background: var(--card-bg); padding: 20px; border-radius: 25px; margin-bottom: 25px; border: 1px solid #222; }
-        .total-display { font-size: 2.8rem; font-weight: 900; color: white; display: block; }
-        .discount-label { color: #25D366; font-size: 0.9rem; font-weight: 800; margin-top: 5px; display: none; }
+        .order-summary {
+            background: var(--card-bg); padding: 25px 20px;
+            border-radius: 25px; margin-bottom: 20px; border: 1px solid #222;
+            transition: transform 0.3s ease;
+        }
+        .total-display { font-size: 2.8rem; font-weight: 900; color: white; display: block; transition: all 0.3s ease; }
+        .discount-label { color: #25D366; font-size: 0.85rem; font-weight: 800; margin-top: 8px; display: none; text-transform: uppercase; letter-spacing: 1px; }
 
-        .qty-selector { display: flex; align-items: center; justify-content: center; gap: 25px; margin-top: 15px; }
-        .qty-btn { background: #222; border: 2px solid var(--accent-orange); color: var(--accent-orange); width: 50px; height: 50px; border-radius: 50%; font-size: 1.8rem; cursor: pointer; font-weight: 900; }
-        #qtyValue { font-size: 2.2rem; font-weight: 900; min-width: 50px; }
+        .qty-selector { display: flex; align-items: center; justify-content: center; gap: 30px; margin-top: 15px; }
+        .qty-btn {
+            background: #222; border: 2px solid var(--accent-orange); color: var(--accent-orange);
+            width: 55px; height: 55px; border-radius: 50%; font-size: 2rem;
+            cursor: pointer; font-weight: 900; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .qty-btn:active { transform: scale(0.9); background: var(--accent-orange); color: white; }
+        #qtyValue { font-size: 2.4rem; font-weight: 900; min-width: 40px; text-align: center; }
 
-        .order-form { display: flex; flex-direction: column; gap: 15px; }
+        .order-form { display: flex; flex-direction: column; gap: 12px; }
+
+        /* Estilos de Inputs fluidos */
         input, select {
             height: var(--input-height); width: 100%; background: var(--card-bg);
-            border: 2px solid #222; border-radius: 15px; color: white;
-            padding: 0 20px; font-size: 1.3rem; font-weight: 600; text-align: center; outline: none;
+            border: 2px solid #222; border-radius: 18px; color: white;
+            padding: 0 20px; font-size: 1.2rem; font-weight: 600; text-align: center;
+            outline: none; transition: all 0.3s ease; appearance: none;
         }
-        input:focus, select:focus { border-color: var(--accent-orange); box-shadow: 0 0 15px rgba(243, 109, 33, 0.2); }
+        input:focus, select:focus { border-color: var(--accent-orange); box-shadow: 0 0 15px rgba(243, 109, 33, 0.2); transform: translateY(-2px); }
+        input::placeholder { color: #555; font-weight: 600; }
+
+        /* Animación Glow Up para el Autofill */
+        @keyframes autofillGlow {
+            0% { border-color: #222; box-shadow: 0 0 0 transparent; }
+            40% { border-color: #25D366; box-shadow: 0 0 20px rgba(37, 211, 102, 0.6); transform: scale(1.02); }
+            100% { border-color: var(--accent-orange); box-shadow: 0 0 10px rgba(243, 109, 33, 0.2); transform: scale(1); }
+        }
+        .input-autofilled { animation: autofillGlow 1s ease-out forwards; color: #fff !important; }
 
         #soldOutOverlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center;
             backdrop-filter: blur(10px); padding: 30px;
         }
-        .sold-out-card { border: 2px solid var(--accent-orange); padding: 40px 20px; border-radius: 30px; background: #000; }
+        .sold-out-card { border: 2px solid var(--accent-orange); padding: 50px 20px; border-radius: 30px; background: #000; width: 100%; max-width: 350px;}
         .sold-out-card h2 { font-family: 'Bungee'; color: var(--accent-orange); font-size: 3rem; }
 
         .btn-whatsapp {
-            height: 75px; background: #25D366; color: white; border: none; border-radius: 18px; font-weight: 900; font-size: 1.3rem;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 10px;
+            height: 70px; background: #25D366; color: white; border: none; border-radius: 20px; font-weight: 900; font-size: 1.2rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 15px;
+            transition: all 0.3s ease; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
         }
-        .btn-whatsapp svg { width: 35px; height: 35px; fill: white; }
+        .btn-whatsapp:active { transform: translateY(4px); box-shadow: 0 2px 10px rgba(37, 211, 102, 0.3); }
+        .btn-whatsapp svg { width: 30px; height: 30px; fill: white; }
 
         @keyframes pulse-discount {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); color: #25D366; }
             100% { transform: scale(1); }
         }
-        .applied-discount { animation: pulse-discount 0.8s ease; }
+        .applied-discount { animation: pulse-discount 0.8s ease; color: #25D366 !important;}
     </style>
 </head>
 <body>
@@ -109,7 +175,7 @@
 <div id="soldOutOverlay">
     <div class="sold-out-card">
         <h2>SOLD OUT</h2>
-        <p style="margin-top:15px; font-size: 1.2rem;">¡Regresamos pronto!</p>
+        <p style="margin-top:15px; font-size: 1.2rem; color:#ccc;">¡Regresamos pronto!</p>
     </div>
 </div>
 
@@ -132,13 +198,14 @@
     <form class="order-form">
         <input type="tel" id="telefono" placeholder="Número de Celular" autocomplete="tel" required>
 
-        <div class="loyalty-card">
+        <div class="loyalty-card" id="loyaltyCard">
             <div class="loyalty-header">
                 <span class="loyalty-tag">Motto XP Rewards</span>
                 <span class="xp-label" id="xpStatus">0 / 5 BOWLS</span>
             </div>
             <div class="xp-track">
                 <div class="xp-bar" id="xpBar"></div>
+                <span class="reward-icon" id="rewardIcon">🎁</span>
             </div>
             <p class="loyalty-msg" id="loyaltyMessage">Ingresa tu número para subir de nivel.</p>
         </div>
@@ -162,11 +229,14 @@
         let precioBase = cantidad * MOTTO_CONFIG.precioBowl;
         let total = tieneDescuentoBienvenida ? (precioBase - MOTTO_CONFIG.descuentoBienvenida) : precioBase;
         const display = document.getElementById('totalDisplay');
+
         display.textContent = `$${total} MXN`;
+
         if(tieneDescuentoBienvenida) {
             display.classList.add('applied-discount');
             document.getElementById('discountMsg').style.display = 'block';
         } else {
+            display.classList.remove('applied-discount');
             document.getElementById('discountMsg').style.display = 'none';
         }
     }
@@ -174,7 +244,12 @@
     function cambiarCantidad(v) {
         if(MOTTO_CONFIG.isSoldOut) return;
         cantidad += v; if (cantidad < 1) cantidad = 1;
-        document.getElementById('qtyValue').textContent = cantidad;
+
+        const qtyVal = document.getElementById('qtyValue');
+        qtyVal.style.transform = 'scale(1.2)';
+        setTimeout(() => qtyVal.style.transform = 'scale(1)', 150);
+
+        qtyVal.textContent = cantidad;
         actualizarPrecio();
     }
 
@@ -184,8 +259,19 @@
         const msgLabel = document.getElementById('loyaltyMessage');
         const xpBar = document.getElementById('xpBar');
         const xpStatus = document.getElementById('xpStatus');
+        const card = document.getElementById('loyaltyCard');
+        const rewardIcon = document.getElementById('rewardIcon');
 
-        if (tel.length < 10) return;
+        if (tel.length < 10) {
+            // Reset visuales si borra el número
+            xpBar.style.width = "0%";
+            card.classList.remove('card-level-up');
+            xpStatus.classList.remove('text-gold');
+            rewardIcon.classList.remove('active');
+            xpStatus.innerText = "0 / 5 BOWLS";
+            msgLabel.innerHTML = "Ingresa tu número para subir de nivel.";
+            return;
+        }
 
         msgLabel.innerText = "Sincronizando datos...";
         try {
@@ -201,25 +287,45 @@
             if (pedidos > 0 && progreso === 0) {
                 porcentaje = 100;
                 xpStatus.innerText = "¡RECOMPENSA DISPONIBLE!";
+                xpStatus.classList.add('text-gold');
                 msgLabel.innerHTML = "🏆 ¡NIVEL MÁXIMO! Tienes un regalo hoy.";
+
+                // Activar animaciones de victoria
+                card.classList.add('card-level-up');
+                rewardIcon.classList.add('active');
             } else {
                 xpStatus.innerText = `${progreso} / 5 BOWLS`;
+                xpStatus.classList.remove('text-gold');
                 let faltantes = 5 - progreso;
                 msgLabel.innerHTML = `Te faltan <span style='color:var(--accent-orange)'>${faltantes} bowls</span> para subir de nivel.`;
+
+                // Limpiar animaciones
+                card.classList.remove('card-level-up');
+                rewardIcon.classList.remove('active');
             }
 
             // Animamos la barra
             xpBar.style.width = porcentaje + "%";
 
-            // Lógica Bienvenida
+            // Lógica Bienvenida & Autofill
             if (pedidos === 0) {
                 tieneDescuentoBienvenida = true;
                 msgLabel.innerHTML = "✨ ¡NUEVO JUGADOR! Tienes -$30 de regalo.";
             } else {
                 tieneDescuentoBienvenida = false;
                 if (data.nombre) {
-                    document.getElementById('nombre').value = data.nombre;
-                    document.getElementById('direccion').value = data.direccion;
+                    const nomInput = document.getElementById('nombre');
+                    const dirInput = document.getElementById('direccion');
+
+                    nomInput.value = data.nombre;
+                    dirInput.value = data.direccion;
+
+                    // Reiniciar animación para que corra cada vez que se detecta
+                    nomInput.classList.remove('input-autofilled');
+                    dirInput.classList.remove('input-autofilled');
+                    void nomInput.offsetWidth; // Trigger reflow mágico
+                    nomInput.classList.add('input-autofilled');
+                    dirInput.classList.add('input-autofilled');
                 }
             }
             actualizarPrecio();
